@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"regexp"
+	"os"
 )
 
 // net/http based router
@@ -40,6 +41,13 @@ func (h *RegexpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	http.NotFound(w, r)
 }
 
+func getEnv(key, fallback string) string {
+	if value, ok := os.LookupEnv(key); ok {
+		return value
+	}
+	return fallback
+}
+
 // todo "Object"
 type Todo struct {
 	Id           int    `json:"Id,sting"`
@@ -56,7 +64,19 @@ type Server struct {
 }
 
 func main() {
-	db, err := sql.Open("mysql", "root:@tcp(127.0.0.1:3306)/golang_todo_dev")
+
+	dbhost := getEnv("DB_HOST", "127.0.0.1")
+	dbuser := getEnv("DB_USER", "root")
+	dbpassword := getEnv("DB_PASSWORD", "password")
+	dbport := getEnv("DB_PORT", "3306")
+	dbname := getEnv("DB_NAME", "todo_app")
+
+	dbconnection := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", dbuser, dbpassword, dbhost, dbport, dbname)
+
+	fmt.Println(dbconnection)
+
+
+	db, err := sql.Open("mysql", dbconnection)
 	if err != nil {
 		log.Fatal(err)
 	}
