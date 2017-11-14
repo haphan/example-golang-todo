@@ -1,0 +1,34 @@
+---
+- hosts: all
+  vars:
+    registry_user: acmeengineer
+    registry_key: c12321c2-f9ca-49f5-a7fb-98304d92c8b4
+    registry_email: 'acmedeveloper@mailinator.com'
+    image: acmesoft/awesome-app
+    container_name: awsome-app-default
+    tag: latest
+    db_user: '{{ vault_sttconnect_db_user }}'
+    db_password: '{{ vault_sttconnect_db_password }}'
+  tasks:
+    - name: Login to registry
+      docker_login:
+        username: '{{ registry_user }}'
+        password: '{{ registry_key }}'
+        email: '{{ registry_email }}'
+
+    - name: Update latest application image from registry
+      docker_image:
+        name: '{{ item }}'
+        state: present
+        force: yes
+        tag: '{{ tag }}'
+      with_items:
+        - '{{ image }}'
+
+    - name: Deploy application
+      docker_container:
+        name: '{{ container_name }}'
+        state: started
+        restart_policy: always
+        recreate: yes
+        image: '{{ image }}:{{ tag }}'
