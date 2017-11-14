@@ -24,6 +24,8 @@ test:
     	-Dsonar.projectKey=APP \
     	-Dsonar.sources=. \
     	-Dsonar.host.url=http://sonar.103.206.24.85.nip.io:9000 \
+    	-Dsonar.branch=`git rev-parse --abbrev-ref HEAD` \
+    	-Dsonar.report.export.pat=. \
     	-Dsonar.login=10aa0cbbac8c58ef73cff33a0239dd8692a51211
 
 build:
