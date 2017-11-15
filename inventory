@@ -1,0 +1,14 @@
+[dev]
+app_dev ansible_host=192.168.11.62
+web_dev ansible_host=192.168.10.53
+db_dev ansible_host=192.168.12.61
+
+[staging]
+app_staging
+
+[prod]
+app_prod
+
+[all:vars]
+ansible_ssh_user=cloud-user
+ansible_become=true
