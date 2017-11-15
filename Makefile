@@ -38,11 +38,14 @@ push:
 	docker push $(TAG_LAST_SUCCESS)
 	docker push $(TAG_LATEST)
 
-deploy_staging:
+deploy_dev:
+	ansible-playbook -vv -l dev deploy.yml
 
+deploy_staging:
+	ansible-playbook -vv -l staging deploy.yml
 
 deploy_prod:
-
+	ansible-playbook -vv -l prod deploy.yml
 
 clean:
 	rm -rf bin/*
